@@ -7,6 +7,7 @@ import domen.Book;
 
 public class BookVector {
 
+	private Book mainBook;
 	private Book book;
 	private double[] attributeVector;
 
@@ -16,9 +17,18 @@ public class BookVector {
 
 	public BookVector(Book book, ArrayList<Book> books) {
 		super();
+		this.mainBook = book;
 		this.book = book;
 		VectorBuilder vb = new VectorBuilder(books);
-		attributeVector = vb.createVector(book);
+		attributeVector = vb.createVector(mainBook, book);
+	}
+
+	public BookVector(Book mainBook, Book book, ArrayList<Book> books) {
+		super();
+		this.mainBook = book;
+		this.book = book;
+		VectorBuilder vb = new VectorBuilder(books);
+		attributeVector = vb.createVector(mainBook, book);
 	}
 
 	public Book getBook() {

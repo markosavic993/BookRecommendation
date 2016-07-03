@@ -16,10 +16,10 @@ public class VectorBuilder {
 		tfidfCalculator = new TFIDFCalculator(books);
 	}
 	
-	public double[] createVector(Book book) {
-		bookAuthor = tfidfCalculator.calculateAuthorTFIDF(book);
-		bookGenre = tfidfCalculator.calculateGenreTDIDF(book);
-		authorMovement = tfidfCalculator.calculateMovementTFIDF(book);
+	public double[] createVector(Book mainBook, Book book) {
+		bookAuthor = tfidfCalculator.calculateAuthorTFIDF(mainBook, book);
+		bookGenre = tfidfCalculator.calculateGenreTDIDF(mainBook, book);
+		authorMovement = tfidfCalculator.calculateMovementTFIDF(mainBook, book);
 
 		double[] attributeVector = new double[3];
 		attributeVector[0] = bookAuthor;

@@ -16,39 +16,46 @@ import vector.BookVector;
 public class BookRecommendationService {
 	private List<Book> books;
 	private CosineSimilarityCalculator cosineSimilarityCalculator;
-	
+
 	public BookRecommendationService() {
 		cosineSimilarityCalculator = new CosineSimilarityCalculator();
 		books = loadBooks();
 	}
-	
+
 	private List<Book> loadBooks() {
 		BookLoader bookLoader = new BookLoader();
 		return bookLoader.loadBooks();
 	}
 
-	public List<Book> recommendBooks() {
+	public List<Book> recommendBooks(Book mainBook, int recommendationsNum) {
 		System.out.println("Calculating...");
 		List<Book> recommendedBooks = new ArrayList<>();
 		List<ValuedBook> valuedBooks = new ArrayList<>();
 		
-		ArrayList<String> listOfGenres = new ArrayList<>();
-		listOfGenres.add("Psychological novel");
-		listOfGenres.add("Philosophical fiction");
-		BookVector vectorMain = new BookVector(new Book("Crime and punishment", "Fyodor Dostoyevsky","Literary realism", listOfGenres), (ArrayList<Book>) books);
+		BookVector vectorMain = new BookVector(mainBook, (ArrayList<Book>) books);
 		for (int i = 0; i < books.size(); i++) {
-			BookVector compareVector = new BookVector(books.get(i), (ArrayList<Book>) books);
+			BookVector compareVector = new BookVector(mainBook, books.get(i), (ArrayList<Book>) books);
 			
 			double value = cosineSimilarityCalculator.calculateCosineSimilarity(vectorMain.getBookVector(), compareVector.getBookVector());
 			ValuedBook valuedBook = new ValuedBook(books.get(i), value);
 			valuedBooks.add(valuedBook);
 		}
+//		ValuedBook vb = null;
+//		for (ValuedBook valuedBook : valuedBooks) {
+//			if(valuedBook.getBook().getAuthorName().equals(mainBook.getAuthorName()) && valuedBook.getBook().getBookName().equals(mainBook.getBookName())) {
+//				
+//				vb = valuedBook;
+//				break;
+//			}
+//		}
+//		System.out.println(mainBook + "xxxxxxxxxxxxxxxxxxxxxxxxxx");
+//		valuedBooks.remove(vb);
 		List<ValuedBook> sortedValuedBooks = sortBooks(valuedBooks);
 		
 		for (ValuedBook valuedBook : sortedValuedBooks) {
-			System.out.println(valuedBook.getBook().getBookName() + " / " + valuedBook.getValue());
+			//System.out.println(valuedBook.getBook().getBookName() + " / " + valuedBook.getValue());
 		}
-		for (int i = 1; i < 21; i++) {
+		for (int i = 1; i <= recommendationsNum; i++) {
 			recommendedBooks.add(sortedValuedBooks.get(i).getBook());
 			
 		}
@@ -57,18 +64,15 @@ public class BookRecommendationService {
 	}
 
 	private List<ValuedBook> sortBooks(List<ValuedBook> valuedBooks) {
-		
+
 		Collections.sort(valuedBooks, new Comparator<ValuedBook>() {
 			@Override
 			public int compare(ValuedBook o1, ValuedBook o2) {
-				// TODO Auto-generated method stub
 				return Double.compare(o2.getValue(), o1.getValue());
 			}
 		});
-		
+
 		return valuedBooks;
 	}
 
-	
-	
 }

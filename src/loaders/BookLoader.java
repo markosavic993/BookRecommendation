@@ -16,22 +16,9 @@ public class BookLoader {
 
 	public List<Book> loadBooks() {
 		List<Book> bookList = new ArrayList<Book>();
-		// Book b1 = new Book("N1", "Fyodor Dostoyevsky", "Literary realism",
-		// new String[]{"Psychological novel", "Philosophical fiction"});
-		// Book b2 = new Book("N2", "sasfasf", "Realism", new
-		// String[]{"Psychological novel", "Social"});
-		// Book b3 = new Book("N3", "asfasfasfsa", "Social", new
-		// String[]{"safasfsafasf", "safasfas", "asfafafwf"});
-		// Book b4 = new Book("N4", "Fyodor Dostoyevsky", "safasfasfas", new
-		// String[]{"safsaaa"});
-		// bookList.add(b1);
-		// bookList.add(b2);
-		// bookList.add(b3);
-		// bookList.add(b4);
-		// return bookList;
 
 		try {
-			FileReader fileReader = new FileReader("bookSetList.csv");
+			FileReader fileReader = new FileReader("books.csv");
 			BufferedReader reader = new BufferedReader(fileReader);
 			String singleRow = reader.readLine();
 
@@ -94,7 +81,7 @@ public class BookLoader {
 				singleRow = reader.readLine();
 				//System.out.println("vrednost single row na kraju iteracije: " + singleRow);
 				
-				if (bookList.contains(book)) {
+				if (!bookList.isEmpty() && bookList.contains(book)) {
 					//System.out.println("n");
 					for (Book b : bookList) {
 						if (b.equals(book)) {
@@ -109,10 +96,8 @@ public class BookLoader {
 			}
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

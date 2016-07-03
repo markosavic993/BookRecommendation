@@ -21,8 +21,8 @@ public class Controler {
 		return instance;
 	}
 	
-	public List<Book> getRecommendedBooks() {
-		return recommendationService.recommendBooks();
+	public List<Book> getRecommendedBooks(Book mainBook, int recommendationsNum) {
+		return recommendationService.recommendBooks(mainBook, recommendationsNum);
 	}
 	
 }

@@ -4,37 +4,37 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.plaf.basic.BasicBorders.MarginBorder;
+
 import domen.Book;
 import loaders.BookLoader;
 
 public class TF {
 	
-	List<Book> books;
+	private List<Book> books;
 	
 	public TF(ArrayList<Book> books) {
 		this.books = books;
 	}
 	
 	
-	public double calculateAuthorTF(Book book) {
+	public double calculateAuthorTF(Book mainBook, Book book) {
 		double tf = 0;
-		if(book.getAuthorName().equals("Fyodor Dostoyevsky")) {
+		if(book.getAuthorName().equals(mainBook.getAuthorName())) {
 			tf++;
 		}
 		
 		return tf;
 	}
 	
-	public double calculateGenreTF(Book book) {
+	public double calculateGenreTF(Book mainBook, Book book) {
 		double tf = 0;
 		
 		for(int i = 0; i < book.getGenres().size(); i++) {
-			if(book.getGenres().get(i).equals("Philosophical fiction")) {
-				tf++;
-			}
-			
-			if(book.getGenres().get(i).equals("Psychological novel")) {
-				tf++;
+			for(int j = 0; j < mainBook.getGenres().size(); j++) {
+				if(book.getGenres().get(i).equals(mainBook.getGenres().get(j))) {
+					tf++;
+				}
 			}
 		}
 		
@@ -45,12 +45,12 @@ public class TF {
 		}
 	}
 
-	public double calculateMovementTF(Book book) {
+	public double calculateMovementTF(Book mainBook, Book book) {
 		double tf = 0;
 		
-		if(book.getAuthorMovement().equals("Literary realism")) {
+		if(book.getAuthorMovement().equals(mainBook.getAuthorMovement())) {
 			tf++;
-		} else if(book.getAuthorMovement().toUpperCase().contains("REALISM")) {
+		} else if(mainBook.getAuthorMovement().toUpperCase().contains(book.getAuthorMovement().toUpperCase())) {
 			tf+=0.5;
 		}
 		

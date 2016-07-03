@@ -13,9 +13,10 @@ public class CosineSimilarityCalculator {
 			thirdElement = thirdElement + vector2[i] * vector2[i];
 		}
 		
+		if(Math.sqrt(secondElement) * Math.sqrt(thirdElement) == 0 || Double.isNaN(Math.sqrt(secondElement) * Math.sqrt(thirdElement))) {
+			return 0;
+		}
 		double result = firstElement / (Math.sqrt(secondElement) * Math.sqrt(thirdElement));
-		
-		if(Double.isNaN(result)) return 0;
 		
 		return result;
 	}
