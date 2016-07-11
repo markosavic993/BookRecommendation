@@ -3,32 +3,24 @@
 
 Though the Web was originally conceived to be used by human users, new
 data-oriented contents have been produced and made available on the Web
-with the introduction and development of the **Semantic Web idea**. In particular,
-more recently there has been a growing interest in the **Linked Open Data (LOD)
-initiative**. The cornerstone of Linked Open Data is making available free
-and open RDF datasets linked with each other. The aim is allowing applications
-to leverage this vast amount of data to enrich their functionalities and to improve
-the user experience on the Web. 
+with the introduction and development of the [Semantic Web idea](https://en.wikipedia.org/wiki/Semantic_Web). In particular,
+more recently there has been a growing interest in the [Linked Open Data (LOD)
+initiative](http://linkeddata.org). The cornerstone of Linked Open Data is making available free
+and open RDF datasets linked with each other. 
 
-The aim of this project is to create **a book recommendation system** using it's attributes. The idea is to show usage of machine learning techniques in a recommender system, which will generate a list of a suggested books for a selected book, regardless of the chosen dataset. The project was made according to **MORE: More than Movie Recommendation**, web application for movie recommendation based on movies' attributes.
+The aim of this project is to create **a book recommendation system** using book attributes. The idea is to implement a book recommender system that will generate a list of a suggested books to read for a selected book, regardless of the chosen dataset. The project was inspired bu the paper [MORE: More than Movie Recommendation](http://sisinflab.poliba.it/semantic-expert-finding/papers/tech-report-1-2012.pdf), a web application for movie recommendation based on movie's attributes.
 
-Book attributes that we are focused on are:
-* Book author,
-* Genre / genres, where we consider a possibility that a book can be connected to more than one genre,
-* The literary movement of selected act (book).
+The project workflow consists of the following steps:
+*	Collecting data from [DBPedia](http://wiki.dbpedia.org/) and preprocessing
+*	Building recommendation system
+*	Implementation
+*	Technical realisation
 
-The project workflow consisted of the following steps:
-*	Data gathering from [DBPedia](http://wiki.dbpedia.org/)
-*	Data processing and creation of datasets
-*	The usage of machine learning techniques for filtering data
-*	The creation of output
-*	Evaluation of output data
+##Collecting data from DBPedia and preprocessing
 
-##Collecting data
+Datasets used in this project are made out of data from DBpedia, the RDF-based version of Wikipedia. [RDF](https://www.w3.org/RDF/)(Resource Description Framework) is a standard model for data interchange on the Web. For searching DBPedia we have used [SPARQL](https://www.w3.org/TR/rdf-sparql-query/) (The Simple Protocol and RDF Query Language), which makes possible to ask complex queries to DBpedia.
 
-As we said, datasets are made out of data from DBpedia, the RDF-based version of Wikipedia. **RDF** is a standard model for data interchange on the Web. RDF has features that facilitate data merging even if the underlying schemas differ, and it specifically supports the evolution of schemas over time without requiring all the data consumers to be changed. For searching DBPedia we have used **SPARQL (The Simple Protocol and RDF Query Language)**, which make it possible to ask complex queries to DBPedia with high precision in the results.
-
-This is the example of SPARQL query for searching and collecting data:
+The example of a SPARQL query for searching and collecting data is displayed in following listing:
 ```
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -53,22 +45,36 @@ FILTER (lang(?authorName) = "en" && lang(?bookName) = "en" && lang(?bookAbstract
 
 }
 ```
+*Listing 1 - SPARQL query for collecting data*
 
-After we got data, we stored it into **csv** file. This way, it is easy to manipulate with data.
+In the query above, books are filtered by movements of their authors. Only books'versions with attribute values in English are kept and used in this recommending system. In the *select* part of the query, attributes required for dataset are listed. The results of this query are available [here](http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=PREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0D%0APREFIX+dbpedia%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2F%3E%0D%0APREFIX+ontology%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0D%0A%0D%0Aselect+distinct+%3FbookURI+%3FbookName+%3FauthorName+%3FauthorMovement+%3FbookGenre+%3FbookAbstract%0D%0Awhere+%7B%0D%0A%3FbookURI+rdf%3Atype+ontology%3ABook+.%0D%0A%3FbookURI++ontology%3Aauthor+%3Fauthor+.%0D%0A%3FbookURI++ontology%3Aabstract+%3FbookAbstract+.+%0D%0A%3FbookURI++ontology%3AliteraryGenre+%3Fgenre+.+%0D%0A%3FbookURI+rdfs%3Alabel+%3FbookName+.%0D%0A%0D%0A%3Fauthor+rdfs%3Alabel+%3FauthorName+.+%0D%0A%3Fauthor+ontology%3Amovement+%3Fmovement+.%0D%0A%3Fgenre+rdfs%3Alabel+%3FbookGenre+.+%0D%0A%3Fmovement+rdfs%3Alabel+%3FauthorMovement+.%0D%0AFILTER+%28regex%28%3FauthorMovement%2C+%22Romanticism%22%2C+%22i%22%29+%7C%7C+regex%28%3FauthorMovement%2C+%22Realism%22%2C+%22i%22%29+%7C%7C+regex%28%3FauthorMovement%2C+%22Social+novel%22%2C+%22i%22%29+%7C%7C+regex%28%3FauthorMovement%2C+%2219th-century+French+literature%22%2C+%22i%22%29+%7C%7C+regex%28%3FauthorMovement%2C+%22Proletarian+literature%22%2C+%22i%22%29+%7C%7C+regex%28%3FauthorMovement%2C+%22Science+fiction%22%2C+%22i%22%29+%7C%7C+regex%28%3FauthorMovement%2C+%22Detective+fiction%22%2C+%22i%22%29+%7C%7C+regex%28%3FauthorMovement+%2C%22Impressionism%22%2C+%22i%22%29+%7C%7C+regex%28%3FauthorMovement+%2C%22Modernism%22%2C+%22i%22%29%29%0D%0AFILTER+%28lang%28%3FauthorName%29+%3D+%22en%22+%26%26+lang%28%3FbookName%29+%3D+%22en%22+%26%26+lang%28%3FbookAbstract%29+%3D+%22en%22+%26%26+lang%28%3FauthorMovement%29+%3D+%22en%22+%26%26+lang%28%3FbookGenre%29+%3D+%22en%22%29+%0D%0A%0D%0A%0D%0A%7D&format=text%2Fhtml&CXML_redir_for_subjs=121&CXML_redir_for_hrefs=&timeout=30000&debug=on).
+Extracted data is stored it into [*csv* file](https://raw.githubusercontent.com/markosavic993/BookRecommendation/master/data/bookDataSet.csv), and unnecessary columns are removed. Data snippet is displayed below:
+```
+uri,name,author_name,author_movement,genre,abstract
 
-## Cosine similarity
+http://dbpedia.org/resource/The_Brothers_Karamazov,The Brothers Karamazov,Fyodor Dostoyevsky,Literary realism,Philosophical fiction,The Brothers Karamazov also translated as The Karamazov Brothers, is the final novel by the Russian author Fy...	
 
-In order to compute the similarities it's used **VSM (Vector Space Model)**. In VSM non-binary weights are assigned to index terms in queries and in
-documents (represented as sets of terms), and are used to compute the degree
-of similarity between each document in the collection and the query. 
+http://dbpedia.org/resource/Crime_and_Punishment,Crime and Punishment,Fyodor Dostoyevsky,Literary realism,Philosophical fiction/Psychological novel,Crime and Punishment is a novel by the Russian author Fyodor Dostoyevsky. It was first published in the lit...
 
-The cosine similarity between two vectors (or two documents on the Vector Space) is a measure that calculates the cosine of the angle between them. This metric is a measurement of orientation and not magnitude, it can be seen as a comparison between documents on a normalized space. The formula for calculating cosine similarity is:
+http://dbpedia.org/resource/The_Village_of_Stepanchikovo,The Village of Stepanchikovo,Fyodor Dostoyevsky,Literary realism,Satire,The Village of Stepanchikovo also known as The Friend of the Famil...					
 
-![equation](http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/img/knn/cos.png)
+```
+*Listing 2 - Data snippet*
 
-The dividend is a dot product of those vectors, and the divisor is a product of vector intensities. Cosine Similarity will generate a metric that says how related are two documents by looking at the angle instead of magnitude. So, the more that the result is closer to 1, two vectors (documents/books) are more similar. On the other hand, if the result tends to 0, it means that vectors are opposed (the angle between them is 90 degrees).
+##Building recommendation system
 
-In order to increase precision, it's recommanded to use *TFIDF* values. TF(term-frequency) is a measure of how many times the terms present in vocabulary E(*t*) are present in the documents, we define the term-frequency as a couting function:
+###Vector Space Model
+
+In order to compute the similarities, [VSM (Vector Space Model)](https://en.wikipedia.org/wiki/Vector_space_model) is implemented. In VSM non-binary weights are assigned to index terms in queries and in documents (represented as sets of terms), and are used to compute the degree of similarity between each document in the collection and the query. [1]
+
+Book attributes that are used as a base for recommendation are:
+* Author name,
+* Book genre - a possibility that a book can be connected to more than one genre is considered,
+* Author movement - the literary movement of selected act (book).
+
+So, the goal is to create a vector of values for listed atributes for every book and calculate its similarity score with vectors of all other books in the dataset.
+
+To increase precision, it's recommanded to use [TFIDF](http://www.cs.pomona.edu/~dkauchak/classes/f09/cs160-f09/lectures/lecture5-tfidf.pdf) values for creating vectors. TF(term-frequency) is a measure of how many times the terms present in vocabulary E(*t*) are present in the documents, we define the term-frequency as a couting function [4]:
 
 ![tf](http://s0.wp.com/latex.php?latex=+++%5Cmathrm%7Btf%7D%28t%2Cd%29+%3D+%5Csum%5Climits_%7Bx%5Cin+d%7D+%5Cmathrm%7Bfr%7D%28x%2C+t%29+++&bg=ffffff&fg=000000&s=0)
 
@@ -77,7 +83,25 @@ where the fr(*x, t*) is a simple function defined as:
 ![fr](http://s0.wp.com/latex.php?latex=+++%5Cmathrm%7Bfr%7D%28x%2Ct%29+%3D+++%5Cbegin%7Bcases%7D+++1%2C+%26+%5Cmbox%7Bif+%7D+x+%3D+t+%5C%5C+++0%2C+%26+%5Cmbox%7Botherwise%7D+%5C%5C+++%5Cend%7Bcases%7D+++&bg=ffffff&fg=000000&s=0)
 
 
-Some terms may be very common, so we use IDF(inverse-document-frequency) which diminishes the weight of terms that occur very frequently in the document set and increases the weight of terms that occur rarely. IDF is calculating according to next formula:
+In *listing 3*, the code snippet for calculating *tf value* for *bookGenres* attribute, is shown:
+```java
+public double calculateGenreTF(Book mainBook, Book book) {
+		double tf = 0;
+		
+		for(int i = 0; i < book.getGenres().size(); i++) {
+			for(int j = 0; j < mainBook.getGenres().size(); j++) {
+				if(book.getGenres().get(i).equals(mainBook.getGenres().get(j))) {
+					tf++;
+				}
+			}
+		}
+		
+		return tf/book.getGenres().size();
+	}
+```
+*Listing 3 - Java code for calculating tf*
+
+Some terms may be very common, so we use IDF (Inverse Document Frequency) which diminishes the weight of terms that occur very frequently in the document set and increases the weight of terms that occur rarely. In context of book recommendation, it's obvious that *bookAuthor* attribute is more relevant for recommending system then *authorMovement* attribute, because there are many more books that belongs to *Literary realism* movement then books writen by *Fyodor Dostoyevsky*.  IDF is calculating according to next formula:
 
 ![idf](https://wikimedia.org/api/rest_v1/media/math/render/svg/ac67bc0f76b5b8e31e842d6b7d28f8949dab7937)
 
@@ -85,13 +109,148 @@ with
 
 *  **N**: total number of documents in the corpus **N** = **|D|**
 * **|{d in D : t in d}|** : number of documents where the term **t** appears. 
-   
-## Project analysis
+
+In *listing 4*, snippet of Java code for calculating *idf* values for *bookAuthor* attribute, is displayed:
+```java
+public double calculateAuthorIDF(Book mainBook, Book book) {
+		int counter = 0;
+		for (Book b : books) {
+			if (b.getAuthorName().equals(mainBook.getAuthorName())) {
+				counter++;
+			}
+		}
+
+		return Math.log10((books.size() * 1.0) / (counter * 1.0));
+	}
+```
+*Listing 4 - Java code for calculating idf*
+
+Now, if the recommendation parameter is book [Crime And Punishment](http://dbpedia.org/page/Crime_and_Punishment), these will be examples of book vectors:
+```
+Crime and Punishment (1.9594083500800643, 1.505149978319906, 1.541872785344646)
+The Brothers Karamazov (1.9594083500800643, 0.752574989159953, 1.541872785344646)
+The Village of Stepanchikovo (1.9594083500800643, 0.0, 1.541872785344646)
+```
+*Listing 5 - Vector examples*
+
+
+### Cosine similarity
+
+[The cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity) between two vectors (or two documents in the Vector Space) is a measure that calculates the cosine of the angle between them. This metric is a measurement of orientation and not magnitude, it can be seen as a comparison between documents on a normalized space. The equation for calculating cosine similarity is depicted in *Figure 1* [2]:
+
+![equation](http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/img/knn/cos.png "Figure 1 - Cosine similarity equation") *Figure 1 - Cosine similarity equation*
+
+The dividend is a dot product of those vectors, and the divisor is a product of vector intensities. Cosine Similarity will generate a metric that says how related are two documents by looking at the angle instead of magnitude. So, the more the result is closer to 1, two vectors (documents/books) are more similar. On the other hand, if the result tends to 0, it means that vectors are opposed (the angle between them is 90 degrees). [3]
+
+On the following listing, Java code for calculating cosine similarity is displayed:
+```java
+public double calculateCosineSimilarity(double[] vector1, double[] vector2) {
+	double firstElement = 0;
+	double secondElement = 0;
+	double thirdElement = 0;
+	for (int i = 0; i < vector1.length; i++) {
+		firstElement = firstElement + vector1[i] * vector2[i];
+		secondElement = secondElement + vector1[i] * vector1[i];
+		thirdElement = thirdElement + vector2[i] * vector2[i];
+	}
+	if(Math.sqrt(secondElement) * Math.sqrt(thirdElement) == 0 || Double.isNaN(Math.sqrt(secondElement) * 		Math.sqrt(thirdElement))) {
+		return 0;
+	}
+	double result = firstElement / (Math.sqrt(secondElement) * Math.sqrt(thirdElement));
+	return result;
+}
+```
+*Listing 6 - Cosine similarity calculating in Java*
+
+If this is used in an example from previous section, the program will generate the following result:
+```
+Crime and Punishment: 1.0
+The Brothers Karamazov: 0.9689186192323702
+The Village of Stepanchikovo: 0.8561026924522617
+```
+*Listing 7 - Cosine similarity values for given vectors*
 
 ## Implementation
 
-## Result
+This recommendation system accepts two parameters for every recommendation, the book and the number of recommendations.
+```java
+List<Book> lb = Controler.getInstance().getRecommendedBooks(mainBook, 20);
+```
+*Listing 8 - Starting the system from main class*
+
+For the input book "Crime and Punishment" by Dostoyevsky, the system will build vectors for every book from dataset (with implementation of *tfidf* values, as it is shown in previous chapter), and then calculate cosine similarity between selected book and every other book from dataset:
+```java
+for (int i = 0; i < books.size(); i++) {
+	BookVector compareVector = new BookVector(mainBook, books.get(i), (ArrayList<Book>) books);
+	double value = cosineSimilarityCalculator.calculateCosineSimilarity(vectorMain.getBookVector(),compareVector.getBookVector());
+	ValuedBook valuedBook = new ValuedBook(books.get(i), value);
+	valuedBooks.add(valuedBook);
+}
+
+...
+
+VectorBuilder vb = new VectorBuilder(books);
+attributeVector = vb.createVector(mainBook, book);
+
+...
+
+public double[] createVector(Book mainBook, Book book) {
+	bookAuthor = tfidfCalculator.calculateAuthorTFIDF(mainBook, book);
+	bookGenre = tfidfCalculator.calculateGenreTDIDF(mainBook, book);
+	authorMovement = tfidfCalculator.calculateMovementTFIDF(mainBook, book);
+	double[] attributeVector = new double[3];
+	attributeVector[0] = bookAuthor;
+	attributeVector[1] = bookGenre;
+	attributeVector[2] = authorMovement;
+	return attributeVector;
+}
+
+```
+*Listing 9 - The program flow*
+
+*VauedBook* is a class with two attributes, *book* and *value*, which represents a cosine similarity value added to this specific book.
+At the end, recommended books are displayed sorted by recommendation score:
+
+```
+Calculating...
+
+These are recommended books for Crime and punishment:
+Book name: The House of the Dead (novel), Author: Fyodor Dostoyevsky, Genres: Philosophical fiction, Autobiographical novel,  Movement: Literary realism
+Book name: The Idiot, Author: Fyodor Dostoyevsky, Genres: Philosophical fiction,  Movement: Literary realism
+Book name: Demons (Dostoyevsky novel), Author: Fyodor Dostoyevsky, Genres: Philosophical fiction, Political fiction,  Movement: Literary realism
+Book name: The Brothers Karamazov, Author: Fyodor Dostoyevsky, Genres: Philosophical fiction,  Movement: Literary realism
+Book name: The Landlady (Fyodor Dostoyevsky), Author: Fyodor Dostoyevsky, Genres: Fantasy literature, Gothic fiction,  Movement: Literary realism
+Book name: Notes from Underground, Author: Fyodor Dostoyevsky, Genres: Philosophy, Novella,  Movement: Literary realism
+Book name: Poor Folk, Author: Fyodor Dostoyevsky, Genres: Epistolary novel,  Movement: Literary realism
+Book name: The Gambler (novel), Author: Fyodor Dostoyevsky, Genres: Novel,  Movement: Literary realism
+Book name: The Eternal Husband, Author: Fyodor Dostoyevsky, Genres: Novel,  Movement: Literary realism
+Book name: Humiliated and Insulted, Author: Fyodor Dostoyevsky, Genres: Novel,  Movement: Literary realism
+Book name: The Village of Stepanchikovo, Author: Fyodor Dostoyevsky, Genres: Satire,  Movement: Literary realism
+Book name: Netochka Nezvanova (novel), Author: Fyodor Dostoyevsky, Genres: Novel,  Movement: Literary realism
+Book name: Hunger (Hamsun novel), Author: Knut Hamsun, Genres: Philosophical fiction, Psychological novel, Philosophical fiction, Psychological novel,  Movement: Literary realism
+Book name: Home of the Gentry, Author: Ivan Turgenev, Genres: Romance novel, Political fiction,  Movement: Literary realism
+Book name: Rudin, Author: Ivan Turgenev, Genres: Romance novel, Politics,  Movement: Literary realism
+Book name: On the Eve, Author: Ivan Turgenev, Genres: Romance novel, Political fiction,  Movement: Literary realism
+Book name: The Novice (poem), Author: Mikhail Lermontov, Genres: Verse (poetry), Verse (poetry),  Movement: Literary realism
+Book name: Torrents of Spring, Author: Ivan Turgenev, Genres: Fiction,  Movement: Literary realism
+Book name: Smoke (novel), Author: Ivan Turgenev, Genres: Fiction,  Movement: Literary realism
+Book name: Fathers and Sons (novel), Author: Ivan Turgenev, Genres: Romanticism,  Movement: Literary realism
+```
+*Listing 10 - The output*
+
+##Acknowledgements
+
+This application has been developed as a part of the project assignment for the subject [Intelligent Systems](http://ai.fon.bg.ac.rs/) at the [Faculty of Organization Sciences](http://www.fon.bg.ac.rs/), University of Belgrade, Serbia.
 
 ## Technical realisation
 
+*  [JavaSE 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) - widely used platform for development and deployment of portable code for desktop and server environments. Java SE uses the object-oriented Java programming language. It is part of the Java software-platform family. Java SE defines a wide range of general-purpose APIs – such as Java APIs for the Java Class Library – and also includes the Java Language Specification and the Java Virtual Machine Specification.
+*  [JENA](https://jena.apache.org/documentation/query/) - a Java framework for building Semantic Web applications. It provides a extensive Java libraries for helping developers develop code that handles RDF, RDFS, RDFa, OWL and SPARQL in line with published W3C recommendations. Jena includes a rule-based inference engine to perform reasoning based on OWL and RDFS ontologies, and a variety of storage strategies to store RDF triples in memory or on disk. [5]
+
 ## References
+
+1. [http://sisinflab.poliba.it/semantic-expert-finding/papers/tech-report-1-2012.pdf](http://sisinflab.poliba.it/semantic-expert-finding/papers/tech-report-1-2012.pdf)
+2. [http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/index.html](http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/index.html)
+3. [http://blog.christianperone.com/2013/09/machine-learning-cosine-similarity-for-vector-space-models-part-iii/](http://blog.christianperone.com/2013/09/machine-learning-cosine-similarity-for-vector-space-models-part-iii/)
+4. [http://www.cs.pomona.edu/~dkauchak/classes/f09/cs160-f09/lectures/lecture5-tfidf.pdf](http://www.cs.pomona.edu/~dkauchak/classes/f09/cs160-f09/lectures/lecture5-tfidf.pdf)
+5. [https://jena.apache.org/documentation/query/](https://jena.apache.org/documentation/query/)

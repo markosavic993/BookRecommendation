@@ -28,7 +28,9 @@ public class DataCollector {
 	private static void exportDataToCSV(ResultSet rs) throws Exception {
 
 		FileWriter writer = new FileWriter("data/bookDataSet.csv");
-		writer.append("book_uri");
+		writer.append("\"");
+		writer.append("uri");
+		writer.append("\"");
 		writer.append(',');
 		writer.append("\"name\"");
 		writer.append(',');

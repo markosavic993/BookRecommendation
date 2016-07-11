@@ -42,18 +42,20 @@ public class BookRecommendationService {
 		}
 		
 		List<ValuedBook> sortedValuedBooks = sortBooks(valuedBooks);
-		ValuedBook vb = null;
+		
 		for (ValuedBook valuedBook : sortedValuedBooks) {
 			//System.out.println(valuedBook.getBook().getBookName() + " / " + valuedBook.getValue());
+		}
+		
+		ValuedBook vb = null;
+		for (ValuedBook valuedBook : sortedValuedBooks) {
 			if(valuedBook.getBook().getBookName().equals(mainBook.getBookName())) {
 				vb = valuedBook;
 				break;
 			}
 		}
 		sortedValuedBooks.remove(vb);
-		for (ValuedBook valuedBook : sortedValuedBooks) {
-			//System.out.println(valuedBook.getBook().getBookName() + " / " + valuedBook.getValue());
-		}
+	
 		for (int i = 0; i < recommendationsNum; i++) {
 			recommendedBooks.add(sortedValuedBooks.get(i).getBook());
 			
