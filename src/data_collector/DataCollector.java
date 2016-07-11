@@ -21,25 +21,24 @@ public class DataCollector {
 		try {
 			exportDataToCSV(rs);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	private static void exportDataToCSV(ResultSet rs) throws Exception {
 
-		FileWriter writer = new FileWriter("bookDataSet.csv");
-		writer.append("Book URI");
-		writer.append('#');
-		writer.append("Book name");
-		writer.append('#');
-		writer.append("Author name");
-		writer.append('#');
-		writer.append("Author movement");
-		writer.append('#');
-		writer.append("Book genre");
-		writer.append('#');
-		writer.append("Book abstract");
+		FileWriter writer = new FileWriter("data/bookDataSet.csv");
+		writer.append("book_uri");
+		writer.append(',');
+		writer.append("\"name\"");
+		writer.append(',');
+		writer.append("\"author_name\"");
+		writer.append(',');
+		writer.append("\"author_movement\"");
+		writer.append(',');
+		writer.append("\"genre\"");
+		writer.append(',');
+		writer.append("\"abstract\"");
 		writer.append('\n');
 
 		String bookURI = "";
@@ -79,13 +78,13 @@ public class DataCollector {
 
 				}
 			}
-			
-			writer.append(bookURI + "#" + bookName + "#" + authorName + "#" + authorMovement + "#" + bookGenre + "#" + bookAbstract + "\n");
+			String bAbstract = bookAbstract.replaceAll("\"", "\'");
+			writer.append("\""+bookURI+ "\"" + "," + "\""+ bookName + "\""+ "," + "\""+ authorName + "\""+ "," + "\""+ authorMovement + "\""+ "," + "\""+ bookGenre + "\""+ "," + "\""+ bAbstract + "\""+ "\n");
 		}
 		
 		writer.flush();
 	    writer.close();
-	    System.out.println("the end :)");
+	    System.out.println("Data successfully collected!");
 
 	}
 

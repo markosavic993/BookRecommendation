@@ -18,7 +18,7 @@ public class BookLoader {
 		List<Book> bookList = new ArrayList<Book>();
 
 		try {
-			FileReader fileReader = new FileReader("books.csv");
+			FileReader fileReader = new FileReader("data/books.csv");
 			BufferedReader reader = new BufferedReader(fileReader);
 			String singleRow = reader.readLine();
 

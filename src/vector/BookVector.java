@@ -43,4 +43,9 @@ public class BookVector {
 		return attributeVector;
 	}
 	
+	@Override
+	public String toString() {
+		return book.getBookName() + " ("+attributeVector[0]+", "+attributeVector[1]+", "+attributeVector[2]+")";
+	}
+	
 }

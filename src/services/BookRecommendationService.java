@@ -35,27 +35,26 @@ public class BookRecommendationService {
 		BookVector vectorMain = new BookVector(mainBook, (ArrayList<Book>) books);
 		for (int i = 0; i < books.size(); i++) {
 			BookVector compareVector = new BookVector(mainBook, books.get(i), (ArrayList<Book>) books);
-			
+			//System.out.println(compareVector);
 			double value = cosineSimilarityCalculator.calculateCosineSimilarity(vectorMain.getBookVector(), compareVector.getBookVector());
 			ValuedBook valuedBook = new ValuedBook(books.get(i), value);
 			valuedBooks.add(valuedBook);
 		}
-//		ValuedBook vb = null;
-//		for (ValuedBook valuedBook : valuedBooks) {
-//			if(valuedBook.getBook().getAuthorName().equals(mainBook.getAuthorName()) && valuedBook.getBook().getBookName().equals(mainBook.getBookName())) {
-//				
-//				vb = valuedBook;
-//				break;
-//			}
-//		}
-//		System.out.println(mainBook + "xxxxxxxxxxxxxxxxxxxxxxxxxx");
-//		valuedBooks.remove(vb);
-		List<ValuedBook> sortedValuedBooks = sortBooks(valuedBooks);
 		
+		List<ValuedBook> sortedValuedBooks = sortBooks(valuedBooks);
+		ValuedBook vb = null;
+		for (ValuedBook valuedBook : sortedValuedBooks) {
+			//System.out.println(valuedBook.getBook().getBookName() + " / " + valuedBook.getValue());
+			if(valuedBook.getBook().getBookName().equals(mainBook.getBookName())) {
+				vb = valuedBook;
+				break;
+			}
+		}
+		sortedValuedBooks.remove(vb);
 		for (ValuedBook valuedBook : sortedValuedBooks) {
 			//System.out.println(valuedBook.getBook().getBookName() + " / " + valuedBook.getValue());
 		}
-		for (int i = 1; i <= recommendationsNum; i++) {
+		for (int i = 0; i < recommendationsNum; i++) {
 			recommendedBooks.add(sortedValuedBooks.get(i).getBook());
 			
 		}

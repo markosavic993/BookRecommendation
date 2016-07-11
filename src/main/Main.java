@@ -12,7 +12,7 @@ public class Main {
 		ArrayList<String> listOfGenres = new ArrayList<>();
 		listOfGenres.add("Psychological novel");
 		listOfGenres.add("Philosophical fiction");
-		Book mainBook = new Book("Crime and punishment", "Fyodor Dostoyevsky", "Literary realism", listOfGenres);
+		Book mainBook = new Book("Crime and Punishment", "Fyodor Dostoyevsky", "Literary realism", listOfGenres);
 		
 		List<Book> lb = Controler.getInstance().getRecommendedBooks(mainBook, 20);
 		System.out.println("These are recommended books for " + mainBook.getBookName() +":" );
