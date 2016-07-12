@@ -13,8 +13,62 @@ import javax.sound.midi.Soundbank;
 import domen.Book;
 
 public class BookLoader {
-
+	
 	public List<Book> loadBooks() {
+		List<Book> bookList = new ArrayList<Book>();
+
+		try {
+			FileReader fileReader = new FileReader("data/bookDataSet.csv");
+			BufferedReader reader = new BufferedReader(fileReader);
+			String singleRow = reader.readLine();
+			String[] splitted = null;
+
+			int counter = 1;
+			while (singleRow != null) {
+				splitted = singleRow.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+				if(counter == 1) {
+					singleRow = reader.readLine();
+					counter++;
+					continue;
+				}
+				Book book = new Book();
+				book.setBookURI(splitted[0]);
+				book.setBookName(splitted[1]);
+				book.setAuthorName(splitted[2]);
+				book.setAuthorMovement(splitted[3]);
+				book.getGenres().add(splitted[4]);
+				book.setBookAbstract(splitted[5]);
+				counter++;
+				
+				
+				singleRow = reader.readLine();
+				
+				if (!bookList.isEmpty() && bookList.contains(book)) {
+					for (Book b : bookList) {
+						if (b.equals(book)) {
+							b.getGenres().add(book.getGenres().get(0));
+							break;
+						}
+					}
+					continue;
+				}
+
+				bookList.add(book);
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		
+		return loadBooksList();
+	}
+	
+	
+
+	public List<Book> loadBooksList() {
 		List<Book> bookList = new ArrayList<Book>();
 
 		try {
@@ -22,7 +76,7 @@ public class BookLoader {
 			BufferedReader reader = new BufferedReader(fileReader);
 			String singleRow = reader.readLine();
 
-			int brojac = 0;
+			//int brojac = 0;
 			while (singleRow != null) {
 				StringTokenizer stringTokenizer = new StringTokenizer(singleRow, ",");
 				//System.out.println("Vrednot single row na pocetku iteracije: " + singleRow);
@@ -76,7 +130,7 @@ public class BookLoader {
 
 				}
 				
-				brojac++;
+				//brojac++;
 				//System.out.println("iteracija broj: " + brojac);
 				singleRow = reader.readLine();
 				//System.out.println("vrednost single row na kraju iteracije: " + singleRow);
@@ -103,4 +157,5 @@ public class BookLoader {
 
 		return bookList;
 	}
+	
 }

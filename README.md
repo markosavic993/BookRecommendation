@@ -57,9 +57,40 @@ http://dbpedia.org/resource/The_Brothers_Karamazov,The Brothers Karamazov,Fyodor
 http://dbpedia.org/resource/Crime_and_Punishment,Crime and Punishment,Fyodor Dostoyevsky,Literary realism,Philosophical fiction/Psychological novel,Crime and Punishment is a novel by the Russian author Fyodor Dostoyevsky. It was first published in the lit...
 
 http://dbpedia.org/resource/The_Village_of_Stepanchikovo,The Village of Stepanchikovo,Fyodor Dostoyevsky,Literary realism,Satire,The Village of Stepanchikovo also known as The Friend of the Famil...					
-
 ```
 *Listing 2 - Data snippet*
+
+This way, it's much easier to manipulate with data. In next listing, it's shown how to load data from csv file that is created earlier, using [regex](https://docs.oracle.com/javase/tutorial/essential/regex/):
+
+```java
+...
+
+FileReader fileReader = new FileReader("data/bookDataSet.csv");
+BufferedReader reader = new BufferedReader(fileReader);
+String singleRow = reader.readLine();
+String[] splitted = null;
+
+int counter = 1;
+while (singleRow != null) {
+	splitted = singleRow.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+	if(counter == 1) {
+		singleRow = reader.readLine();
+		counter++;
+		continue;
+	}
+	Book book = new Book();
+	book.setBookURI(splitted[0]);
+	book.setBookName(splitted[1]);
+	book.setAuthorName(splitted[2]);
+	book.setAuthorMovement(splitted[3]);
+	book.getGenres().add(splitted[4]);
+	book.setBookAbstract(splitted[5]);
+	counter++;
+	singleRow = reader.readLine();
+	
+	...
+```
+*Listing 3 - Loading data from csv*
 
 ##Building recommendation system
 
@@ -83,23 +114,23 @@ where the fr(*x, t*) is a simple function defined as:
 ![fr](http://s0.wp.com/latex.php?latex=+++%5Cmathrm%7Bfr%7D%28x%2Ct%29+%3D+++%5Cbegin%7Bcases%7D+++1%2C+%26+%5Cmbox%7Bif+%7D+x+%3D+t+%5C%5C+++0%2C+%26+%5Cmbox%7Botherwise%7D+%5C%5C+++%5Cend%7Bcases%7D+++&bg=ffffff&fg=000000&s=0)
 
 
-In *listing 3*, the code snippet for calculating *tf value* for *bookGenres* attribute, is shown:
+In *listing 4*, the code snippet for calculating *tf value* for *bookGenres* attribute, is shown:
 ```java
 public double calculateGenreTF(Book mainBook, Book book) {
-		double tf = 0;
+	double tf = 0;
 		
-		for(int i = 0; i < book.getGenres().size(); i++) {
-			for(int j = 0; j < mainBook.getGenres().size(); j++) {
-				if(book.getGenres().get(i).equals(mainBook.getGenres().get(j))) {
-					tf++;
-				}
+	for(int i = 0; i < book.getGenres().size(); i++) {
+		for(int j = 0; j < mainBook.getGenres().size(); j++) {
+			if(book.getGenres().get(i).equals(mainBook.getGenres().get(j))) {
+				tf++;
 			}
 		}
-		
-		return tf/book.getGenres().size();
 	}
+		
+	return tf/book.getGenres().size();
+}
 ```
-*Listing 3 - Java code for calculating tf*
+*Listing 4 - Java code for calculating tf*
 
 Some terms may be very common, so we use IDF (Inverse Document Frequency) which diminishes the weight of terms that occur very frequently in the document set and increases the weight of terms that occur rarely. In context of book recommendation, it's obvious that *bookAuthor* attribute is more relevant for recommending system then *authorMovement* attribute, because there are many more books that belongs to *Literary realism* movement then books writen by *Fyodor Dostoyevsky*.  IDF is calculating according to next formula:
 
@@ -110,20 +141,20 @@ with
 *  **N**: total number of documents in the corpus **N** = **|D|**
 * **|{d in D : t in d}|** : number of documents where the term **t** appears. 
 
-In *listing 4*, snippet of Java code for calculating *idf* values for *bookAuthor* attribute, is displayed:
+In *listing 5*, snippet of Java code for calculating *idf* values for *bookAuthor* attribute, is displayed:
 ```java
 public double calculateAuthorIDF(Book mainBook, Book book) {
-		int counter = 0;
-		for (Book b : books) {
-			if (b.getAuthorName().equals(mainBook.getAuthorName())) {
-				counter++;
-			}
+	int counter = 0;
+	for (Book b : books) {
+		if (b.getAuthorName().equals(mainBook.getAuthorName())) {
+			counter++;
 		}
-
-		return Math.log10((books.size() * 1.0) / (counter * 1.0));
 	}
+	
+	return Math.log10((books.size() * 1.0) / (counter * 1.0));
+}
 ```
-*Listing 4 - Java code for calculating idf*
+*Listing 5 - Java code for calculating idf*
 
 Now, if the recommendation parameter is book [Crime And Punishment](http://dbpedia.org/page/Crime_and_Punishment), these will be examples of book vectors:
 ```
@@ -131,7 +162,7 @@ Crime and Punishment (1.9594083500800643, 1.505149978319906, 1.541872785344646)
 The Brothers Karamazov (1.9594083500800643, 0.752574989159953, 1.541872785344646)
 The Village of Stepanchikovo (1.9594083500800643, 0.0, 1.541872785344646)
 ```
-*Listing 5 - Vector examples*
+*Listing 6 - Vector examples*
 
 
 ### Cosine similarity
@@ -160,7 +191,7 @@ public double calculateCosineSimilarity(double[] vector1, double[] vector2) {
 	return result;
 }
 ```
-*Listing 6 - Cosine similarity calculating in Java*
+*Listing 7 - Cosine similarity calculating in Java*
 
 If this is used in an example from previous section, the program will generate the following result:
 ```
@@ -168,7 +199,7 @@ Crime and Punishment: 1.0
 The Brothers Karamazov: 0.9689186192323702
 The Village of Stepanchikovo: 0.8561026924522617
 ```
-*Listing 7 - Cosine similarity values for given vectors*
+*Listing 8 - Cosine similarity values for given vectors*
 
 ## Implementation
 
@@ -176,7 +207,7 @@ This recommendation system accepts two parameters for every recommendation, the 
 ```java
 List<Book> lb = Controler.getInstance().getRecommendedBooks(mainBook, 20);
 ```
-*Listing 8 - Starting the system from main class*
+*Listing 9 - Starting the system from main class*
 
 For the input book "Crime and Punishment" by Dostoyevsky, the system will build vectors for every book from dataset (with implementation of *tfidf* values, as it is shown in previous chapter), and then calculate cosine similarity between selected book and every other book from dataset:
 ```java
@@ -206,7 +237,7 @@ public double[] createVector(Book mainBook, Book book) {
 }
 
 ```
-*Listing 9 - The program flow*
+*Listing 10 - The program flow*
 
 *VauedBook* is a class with two attributes, *book* and *value*, which represents a cosine similarity value added to this specific book.
 At the end, recommended books are displayed sorted by recommendation score:
@@ -236,11 +267,11 @@ Book name: Torrents of Spring, Author: Ivan Turgenev, Genres: Fiction,  Movement
 Book name: Smoke (novel), Author: Ivan Turgenev, Genres: Fiction,  Movement: Literary realism
 Book name: Fathers and Sons (novel), Author: Ivan Turgenev, Genres: Romanticism,  Movement: Literary realism
 ```
-*Listing 10 - The output*
+*Listing 11 - The output*
 
 ##Acknowledgements
 
-This application has been developed as a part of the project assignment for the subject [Intelligent Systems](http://ai.fon.bg.ac.rs/) at the [Faculty of Organization Sciences](http://www.fon.bg.ac.rs/), University of Belgrade, Serbia.
+This application has been developed as a part of the project assignment for the subject [Intelligent Systems](http://ai.fon.bg.ac.rs/osnovne/inteligentni-sistemi/) at the [Faculty of Organization Sciences](http://www.fon.bg.ac.rs/), University of Belgrade, Serbia.
 
 ## Technical realisation
 
