@@ -85,6 +85,8 @@ while (singleRow != null) {
 	book.setAuthorMovement(splitted[3]);
 	book.getGenres().add(splitted[4]);
 	book.setBookAbstract(splitted[5]);
+	
+	bookList.add(book);
 	counter++;
 	singleRow = reader.readLine();
 	
