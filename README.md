@@ -105,7 +105,7 @@ Book attributes that are used as a base for recommendation are:
 * Book genre - a possibility that a book can be connected to more than one genre is considered,
 * Author movement - the literary movement of selected act (book).
 
-So, the goal is to create a vector of values for listed atributes for every book and calculate its similarity score with vectors of all other books in the dataset.
+So, the goal is to create a vector of values for listed atributes for every book and calculate its similarity score with vectors of all other books in the [dataset](https://raw.githubusercontent.com/markosavic993/BookRecommendation/master/data/bookDataSet.csv).
 
 To increase precision, it's recommanded to use [TFIDF](http://www.cs.pomona.edu/~dkauchak/classes/f09/cs160-f09/lectures/lecture5-tfidf.pdf) values for creating vectors. TF(term-frequency) is a measure of how many times the terms present in vocabulary E(*t*) are present in the documents, we define the term-frequency as a couting function [4]:
 
@@ -211,7 +211,7 @@ List<Book> lb = Controler.getInstance().getRecommendedBooks(mainBook, 20);
 ```
 *Listing 9 - Starting the system from main class*
 
-For the input book "Crime and Punishment" by Dostoyevsky, the system will build vectors for every book from dataset (with implementation of *tfidf* values, as it is shown in previous chapter), and then calculate cosine similarity between selected book and every other book from dataset:
+For the input book "Crime and Punishment" by Dostoyevsky, the system will build vectors for every book from [dataset](https://raw.githubusercontent.com/markosavic993/BookRecommendation/master/data/bookDataSet.csv) (with implementation of *tfidf* values, as it is shown in previous chapter), and then calculate cosine similarity between selected book and every other book from dataset:
 ```java
 for (int i = 0; i < books.size(); i++) {
 	BookVector compareVector = new BookVector(mainBook, books.get(i), (ArrayList<Book>) books);
