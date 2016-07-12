@@ -238,6 +238,8 @@ public double[] createVector(Book mainBook, Book book) {
 	return attributeVector;
 }
 
+//Vector creation is explained in previous section
+
 ```
 *Listing 10 - The program flow*
 
