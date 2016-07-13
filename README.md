@@ -245,9 +245,9 @@ This application has been developed as a part of the project assignment for the 
 
 ## References
 
-1. R Mirizzi, T Di Noia, VC Ostuni, A Ragone - Politecnico di Bari-Via Orabona, 4, 70125 Bari, Italy, Linked Open Data for content-based recommender systems
-, 2012 - Citeseer
-2. [http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/index.html](http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/index.html)
-3. [http://blog.christianperone.com/2013/09/machine-learning-cosine-similarity-for-vector-space-models-part-iii/](http://blog.christianperone.com/2013/09/machine-learning-cosine-similarity-for-vector-space-models-part-iii/)
-4. [http://www.cs.pomona.edu/~dkauchak/classes/f09/cs160-f09/lectures/lecture5-tfidf.pdf](http://www.cs.pomona.edu/~dkauchak/classes/f09/cs160-f09/lectures/lecture5-tfidf.pdf)
-5. [https://jena.apache.org/documentation/query/](https://jena.apache.org/documentation/query/)
+1. R Mirizzi, T Di Noia, VC Ostuni, A Ragone - Politecnico di Bari, [Linked Open Data for content-based recommender systems](http://sisinflab.poliba.it/semantic-expert-finding/papers/tech-report-1-2012.pdf)
+, 2012
+2. Carleton, [http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/index.html](http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/index.html), *accessed*: 13/7/2016
+3. C Perone, [Machine Learning :: Cosine Similarity for Vector Space Models](http://blog.christianperone.com/2013/09/machine-learning-cosine-similarity-for-vector-space-models-part-iii/), 12/09/2013, *accessed*: 13/7/2016
+4. D Kauchak, Pomona College, [TF-IDF](http://www.cs.pomona.edu/~dkauchak/classes/f09/cs160-f09/lectures/lecture5-tfidf.pdf), 2009 
+5. Apache Jena, [https://jena.apache.org/documentation/query/](https://jena.apache.org/documentation/query/), *accessed*: 13/7/2016
