@@ -104,7 +104,7 @@ with
 *  **N**: total number of documents in the corpus **N** = **|D|**
 * **|{d in D : t in d}|** : number of documents where the term **t** appears. 
 
-In *Listing 4*, a snippet of Java code for calculating *idf* values for *bookAuthor* attribute, is displayed.
+In *Listing 4*, a snippet of Java code for calculating *idf* values for *author_name* attribute, is displayed.
 ```java
 public double calculateAuthorIDF(Book mainBook, Book book) {
 	int counter = 0;
