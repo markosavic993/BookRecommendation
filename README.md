@@ -4,7 +4,7 @@
 Though the Web was originally conceived to be used by human users, new data-oriented content have been produced and made available on the Web with the introduction and development of the [Semantic Web idea](https://en.wikipedia.org/wiki/Semantic_Web). In particular,
 more recently there has been a growing interest in the [Linked Open Data (LOD) initiative](http://linkeddata.org). The cornerstone of Linked Open Data is making available free and open RDF datasets linked with each other. 
 
-The aim of this project is to create **a book recommender system**. The idea is to implement a system that will generate a list of a suggested books to read for a selected book. The project was inspired by the paper [MORE: More than Movie Recommendation](http://sisinflab.poliba.it/semantic-expert-finding/papers/tech-report-1-2012.pdf) [1], where authors describe a web application for movie recommendation based on movie's attributes.
+The aim of this project is to create **a book recommender system**. The idea is to implement a system that will generate a list of a suggested books to read for a selected book. The project was inspired by the paper by Mirizzi et al [1], where authors describe a web application for movie recommendation based on movie's attributes.
 
 The project workflow consists of the following steps:
 *	Collecting data from [DBPedia](http://wiki.dbpedia.org/) and preprocessing
@@ -68,7 +68,7 @@ Book attributes that are used as a base for recommendation are:
 
 So, the goal is to create a vector of values for thw listed atributes for every book and calculate its similarity score with vectors of all other books in the dataset.
 
-To increase precision, it's recommanded to use TFIDF [4] values for creating vectors. TF(term-frequency) is a measure of how many times the terms present in vocabulary E(*t*) are present in the documents, we define the term-frequency as a couting function [4]:
+To increase precision, it's recommanded to use TFIDF values for creating vectors. TF(term-frequency) is a measure of how many times the terms present in vocabulary E(*t*) are present in the documents, we define the term-frequency as a couting function [4]:
 
 ![tf](http://s0.wp.com/latex.php?latex=+++%5Cmathrm%7Btf%7D%28t%2Cd%29+%3D+%5Csum%5Climits_%7Bx%5Cin+d%7D+%5Cmathrm%7Bfr%7D%28x%2C+t%29+++&bg=ffffff&fg=000000&s=0)
 
@@ -245,9 +245,7 @@ This application has been developed as a part of the project assignment for the 
 
 ## References
 
-1. R Mirizzi, T Di Noia, VC Ostuni, A Ragone - Politecnico di Bari, [Linked Open Data for content-based recommender systems](http://sisinflab.poliba.it/semantic-expert-finding/papers/tech-report-1-2012.pdf)
-, 2012
-2. Carleton, [http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/index.html](http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/index.html), *accessed*: 13/7/2016
-3. C Perone, [Machine Learning :: Cosine Similarity for Vector Space Models](http://blog.christianperone.com/2013/09/machine-learning-cosine-similarity-for-vector-space-models-part-iii/), 12/09/2013, *accessed*: 13/7/2016
-4. D Kauchak, Pomona College, [TF-IDF](http://www.cs.pomona.edu/~dkauchak/classes/f09/cs160-f09/lectures/lecture5-tfidf.pdf), 2009 
-5. Apache Jena, [https://jena.apache.org/documentation/query/](https://jena.apache.org/documentation/query/), *accessed*: 13/7/2016
+[1] Mirizzi, R., Di Noia, T., Ostuni, V. C., & Ragone, A. (2012). Linked Open Data for content-based recommender systems. Politecnico di Bari--Via Orabona, 4, 70125.
+[2] k Nearest Neighbors, link: http://cs.carleton.edu/cs_comps/0910/netflixprize/final_results/knn/index.html, *accessed*: 13/7/2016
+[3] Perone, C., Machine Learning :: Cosine Similarity for Vector Space Models (Part III), link: http://blog.christianperone.com/2013/09/machine-learning-cosine-similarity-for-vector-space-models-part-iii/, *accessed*: 13/7/2016
+[4] Kauchak, D., TF-IDF, link: http://www.cs.pomona.edu/~dkauchak/classes/f09/cs160-f09/lectures/lecture5-tfidf.pdf, *accessed*: 13/7/2016
